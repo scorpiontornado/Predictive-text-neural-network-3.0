@@ -1,0 +1,29 @@
+1/09/2020:
+  https://www.pygame.org/docs/tut/tom_games2.html
+3/09/2020:
+  https://www.tensorflow.org/datasets/catalog/emnist#emnistmnist
+  https://www.kaggle.com/crawford/emnist/notebooks
+  https://www.kaggle.com/tarunkr/digit-recognition-tutorial-cnn-99-67-accuracy/notebook
+4/09/2020:
+  https://stackoverflow.com/questions/44225002/why-doesnt-matplotlib-inline-work-in-python-script
+  https://www.kite.com/python/answers/how-to-convert-a-pandas-dataframe-row-to-column-headers-in-python
+  https://stackoverflow.com/questions/34091877/how-to-add-header-row-to-a-pandas-dataframe
+  https://www.tensorflow.org/quantum/tutorials/mnist
+  https://www.tensorflow.org/datasets/keras_example
+  https://en.wikibooks.org/wiki/Python_Programming/Text#:~:text=To%20get%20the%20ASCII%20code,use%20the%20ord()%20function.&text=To%20get%20the%20character%20encoded,use%20the%20chr()%20function.&text=To%20know%20if%20all%20the,use%20the%20isalnum()%20function.
+5/09/20:
+  https://medium.com/@mrdatascience/how-to-plot-mnist-digits-using-matplotlib-65a2e0cc068
+  https://www.journaldev.com/32984/numpy-matrix-transpose-array
+  https://mathinsight.org/matrix_transpose#:~:text=The%20transpose%20of%20a%20matrix%20is%20simply%20a%20flipped%20version,matrix%20A%20by%20AT.
+  https://stackoverflow.com/questions/20002242/how-to-scale-images-to-screen-size-in-pygame
+8/09/20:
+  https://docs.google.com/document/d/1yTfDPovQeSA-VGI3Se70VOsV4nsntmeTyt8FnkCFHzg/edit
+  https://stackoverflow.com/questions/706721/how-do-i-pass-a-method-as-a-parameter-in-python#:~:text=Yes%20it%20is%2C%20just%20use,the%20actual%20callable%20code%20object.
+  https://www.geeksforgeeks.org/args-kwargs-python/#:~:text=through%20*argv%20%3A%20GeeksforGeeks-,**kwargs,and%20any%20number%20of%20them).
+  https://stackoverflow.com/questions/4979542/python-use-list-as-function-parameters
+  https://softwareengineering.stackexchange.com/questions/342374/should-i-really-use-all-uppercase-for-my-constants
+12/09/20:
+  https://www.techiedelight.com/remove-all-items-from-list-python/
+14/09/20:
+  https://stackoverflow.com/questions/16060899/alphabet-range-in-python
+  https://stackoverflow.com/questions/38087060/using-import-inside-class/38087292
