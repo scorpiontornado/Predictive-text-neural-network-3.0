@@ -42,3 +42,4 @@
   https://docs.github.com/en/free-pro-team@latest/github/managing-large-files/configuring-git-large-file-storage
   https://stackoverflow.com/questions/51898857/how-to-add-a-single-file-to-git-lfs
   https://intellipaat.com/community/13687/how-can-i-see-what-i-am-about-to-push-with-git
+  https://www.atlassian.com/git/tutorials/git-lfs
