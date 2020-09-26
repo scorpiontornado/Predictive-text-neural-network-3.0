@@ -132,29 +132,24 @@ class Digit:
 
         plt.imshow(self.cur_digit, cmap="Greys")
         plt.axis("off")
-        plt.title(chr(self.mapping[int(self.predict())]),
-                  y=-0.15, color="green")
+        plt.title(chr(self.mapping[int(self.predict())]), y=-0.15, color="green")
         plt.savefig("images/transposed_digit.png")
 
-        self.cur_dig_img = pygame.image.load(
-            'images/transposed_digit.png').convert()
+        self.cur_dig_img = pygame.image.load('images/transposed_digit.png').convert()
         self.rect = self.cur_dig_img.get_rect()
-        self.cur_dig_img = pygame.transform.scale(
-            self.cur_dig_img, (self.width-self.border_width*2, int((self.rect[3]/self.rect[2])*self.width)-self.border_width*2))
+        self.cur_dig_img = pygame.transform.scale(self.cur_dig_img, (self.width-self.border_width*2, int((self.rect[3]/self.rect[2])*self.width)-self.border_width*2))
         if not self.height:
             # ternary operator needs an else statement, so I used a single line if statement
             self.height = int((self.rect[3]/self.rect[2])*self.width)
 
         self.rect = self.cur_dig_img.get_rect()
-        self.rect = self.rect.move(int(self.x+self.border_width), int(self.y+int((self.height-self.rect[3])/2))) if int(
-            (self.height-self.rect[3])/2) > self.border_width else self.rect.move(int(self.x+self.border_width), int(self.y+self.border_width))  # a = b + 2c, c = (a-b)/2
+        self.rect = self.rect.move(int(self.x+self.border_width), int(self.y+int((self.height-self.rect[3])/2))) if int((self.height-self.rect[3])/2) > self.border_width else self.rect.move(int(self.x+self.border_width), int(self.y+self.border_width))  # a = b + 2c, c = (a-b)/2
 
     def predict(self):
         return self.values[self.index]
 
     def draw(self):
-        pygame.draw.rect(self.surface, self.colour,
-                         (self.x, self.y, self.width, self.height))
+        pygame.draw.rect(self.surface, self.colour, (self.x, self.y, self.width, self.height))
         self.surface.blit(self.cur_dig_img, self.rect)
 
 
@@ -179,32 +174,24 @@ class Button:
 
     def draw(self):
         # vertically short rect
-        pygame.draw.rect(self.surface, self.colour,
-                         (self.rect[0], self.rect[1]+self.r, self.rect[2], self.rect[3]-2*self.r))
-        pygame.draw.rect(self.surface, self.colour, (
-            self.rect[0]+self.r, self.rect[1], self.rect[2]-2*self.r, self.rect[3]))  # vertically tall rect
+        pygame.draw.rect(self.surface, self.colour, (self.rect[0], self.rect[1]+self.r, self.rect[2], self.rect[3]-2*self.r))
+        pygame.draw.rect(self.surface, self.colour, (self.rect[0]+self.r, self.rect[1], self.rect[2]-2*self.r, self.rect[3]))  # vertically tall rect
 
-        pygame.draw.circle(self.surface, self.colour,
-                           (self.x+self.r, self.y+self.r), self.r)  # top left
-        pygame.draw.circle(self.surface, self.colour, (self.x +
-                                                       self.width-self.r, self.y+self.r), self.r)  # top right
-        pygame.draw.circle(self.surface, self.colour, (self.x+self.width -
-                                                       self.r, self.y+self.height-self.r), self.r)  # bottom right
-        pygame.draw.circle(self.surface, self.colour, (self.x+self.r,
-                                                       self.y+self.height-self.r), self.r)  # bottom left
+        pygame.draw.circle(self.surface, self.colour, (self.x+self.r, self.y+self.r), self.r)  # top left
+        pygame.draw.circle(self.surface, self.colour, (self.x + self.width-self.r, self.y+self.r), self.r)  # top right
+        pygame.draw.circle(self.surface, self.colour, (self.x+self.width - self.r, self.y+self.height-self.r), self.r)  # bottom right
+        pygame.draw.circle(self.surface, self.colour, (self.x+self.r, self.y+self.height-self.r), self.r)  # bottom left
 
         self.text = self.font.render(self.string, True, self.text_colour)
 
         try:
-            self.text = pygame.transform.scale(self.text, (int(
-                self.width*0.8), int(self.height*(-1/500*self.text.get_rect()[2]+0.9))))
+            self.text = pygame.transform.scale(self.text, (int(self.width*0.8), int(self.height*(-1/500*self.text.get_rect()[2]+0.9))))
         except ValueError:
             print("ValueError: Cannot scale to negative size")
 
         self.text_rect = self.text.get_rect()
 
-        self.text_rect.center = (
-            self.x + self.x+self.width)//2, (self.y + self.y+self.height)//2
+        self.text_rect.center = (self.x + self.x+self.width)//2, (self.y + self.y+self.height)//2
 
         self.surface.blit(self.text, self.text_rect)
 
@@ -218,8 +205,9 @@ def append_letter(l, w):
 
 
 def append_word(w, s):
-    s.append("".join(w))
-    w.clear()
+    if len(w) > 0:
+        s.append("".join(w))
+        w.clear()
 
 
 def load_map(map_path):
@@ -281,22 +269,17 @@ def setup(screen_size):
     current_word = []
     sentence = []
 
-    digit = Digit(int((screen_x-200)/2), 20, 200, (0, 0, 0),
-                  screen, test_x, test_y, mapping)
+    digit = Digit(int((screen_x-200)/2), 20, 200, (0, 0, 0), screen, test_x, test_y, mapping)
 
-    new_img = Button(int((screen_x-150)/2), digit.y + digit.height + 20, 150, 50, 10, (0, 139, 139),
-                     "NEW IMAGE", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
-    select_img = Button(50, new_img.y + new_img.height + 20, 150, 50, 10, (0, 139, 139),
-                        "SELECT IMAGE", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
-    finish_word = Button(screen_x-150-50, new_img.y + new_img.height + 20, 150, 50, 10, (0, 139, 139),
-                         "FINISH WORD", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
+    new_img = Button(int((screen_x-150)/2), digit.y + digit.height + 20, 150, 50, 10, (0, 139, 139), "NEW IMAGE", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
+    select_img = Button(50, new_img.y + new_img.height + 20, 150, 50, 10, (0, 139, 139), "SELECT IMAGE", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
+    finish_word = Button(screen_x-150-50, new_img.y + new_img.height + 20, 150, 50, 10, (0, 139, 139), "FINISH WORD", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
 
     return done, screen, clock, current_word, sentence, digit, new_img, select_img, finish_word
 
 
 def main(screen_size):
-    done, screen, clock, current_word, sentence, digit, new_img, select_img, finish_word = setup(
-        screen_size)
+    done, screen, clock, current_word, sentence, digit, new_img, select_img, finish_word = setup(screen_size)
 
     ### start main loop ###
 
@@ -311,8 +294,7 @@ def main(screen_size):
         finish_word.draw()
 
         font = pygame.font.Font('freesansbold.ttf', 16)
-        text = font.render(" ".join(sentence) + " " +
-                           "".join(current_word), True, (0, 0, 0))
+        text = font.render(" ".join(sentence) + " " + "".join(current_word), True, (0, 0, 0))
         text_rect = text.get_rect()
         text_rect.center = (int(screen_size[0]/2), 400)
         screen.blit(text, text_rect)
@@ -323,10 +305,8 @@ def main(screen_size):
             elif event.type == pygame.MOUSEBUTTONUP:
                 mousex, mousey = event.pos
                 new_img.is_pressed(mousex, mousey, digit.gen_img)
-                select_img.is_pressed(
-                    mousex, mousey, append_letter, letter, current_word)
-                finish_word.is_pressed(
-                    mousex, mousey, append_word, current_word, sentence)
+                select_img.is_pressed(mousex, mousey, append_letter, letter, current_word)
+                finish_word.is_pressed(mousex, mousey, append_word, current_word, sentence)
 
         pygame.display.flip()
         clock.tick(60)

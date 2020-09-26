@@ -27,3 +27,15 @@
 14/09/20:
   https://stackoverflow.com/questions/16060899/alphabet-range-in-python
   https://stackoverflow.com/questions/38087060/using-import-inside-class/38087292
+24/09/20:
+  https://docs.github.com/en/github/importing-your-projects-to-github/adding-an-existing-project-to-github-using-the-command-line
+  https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository
+  https://docs.microsoft.com/en-us/visualstudio/python/managing-required-packages-with-requirements-txt?view=vs-2019#:~:text=The%20most%20common%20command%20is,txt.&text=If%20you%20want%20to%20install,use%20the%20Install%20from%20requirements.
+  https://github.com/scorpiontornado/Corona-Virus-Website
+25/09/20:
+  https://stackoverflow.com/questions/52718921/problems-getting-pygame-to-show-anything-but-a-blank-screen-on-macos-mojave
+26/09/20:
+  https://git-lfs.github.com/
+  https://docs.github.com/en/free-pro-team@latest/github/managing-large-files/installing-git-large-file-storage
+  https://docs.github.com/en/free-pro-team@latest/github/managing-large-files/configuring-git-large-file-storage
+  https://stackoverflow.com/questions/51898857/how-to-add-a-single-file-to-git-lfs

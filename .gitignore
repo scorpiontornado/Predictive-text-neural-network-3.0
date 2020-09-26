@@ -6,4 +6,7 @@ venv/
 
 # transposed_digit.png will change every time it is run, so it is impractical to keep pushing it to git.
 # You can find an example copy of it in "example_transposed_digit.png"
-images/transposed_digit.png
+#images/transposed_digit.png
+transposed_digit.png
+
+*.DS_Store
