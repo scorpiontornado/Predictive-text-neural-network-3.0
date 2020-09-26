@@ -43,3 +43,4 @@
   https://stackoverflow.com/questions/51898857/how-to-add-a-single-file-to-git-lfs
   https://intellipaat.com/community/13687/how-can-i-see-what-i-am-about-to-push-with-git
   https://www.atlassian.com/git/tutorials/git-lfs
+  https://www.git-tower.com/learn/git/ebook/en/command-line/advanced-topics/git-lfs/
