@@ -45,3 +45,4 @@
   https://www.atlassian.com/git/tutorials/git-lfs
   https://www.git-tower.com/learn/git/ebook/en/command-line/advanced-topics/git-lfs/
   https://www.atlassian.com/git/tutorials/syncing/git-push
+  https://medium.com/@pavanskipo/how-to-use-git-lfs-large-file-storage-to-push-large-files-to-github-41c8db1e2d65
