@@ -34,6 +34,8 @@
   https://github.com/scorpiontornado/Corona-Virus-Website
 25/09/20:
   https://stackoverflow.com/questions/52718921/problems-getting-pygame-to-show-anything-but-a-blank-screen-on-macos-mojave
+  https://towardsdatascience.com/uploading-large-files-to-github-dbef518fa1a
+
 26/09/20:
   https://git-lfs.github.com/
   https://docs.github.com/en/free-pro-team@latest/github/managing-large-files/installing-git-large-file-storage
