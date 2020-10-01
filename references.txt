@@ -46,3 +46,20 @@
   https://www.git-tower.com/learn/git/ebook/en/command-line/advanced-topics/git-lfs/
   https://www.atlassian.com/git/tutorials/syncing/git-push
   https://medium.com/@pavanskipo/how-to-use-git-lfs-large-file-storage-to-push-large-files-to-github-41c8db1e2d65
+27/09/20:
+  https://stackoverflow.com/questions/61586981/valueerror-layer-sequential-20-expects-1-inputs-but-it-received-2-input-tensor
+  https://stackoverflow.com/questions/3899980/how-to-change-the-font-size-on-a-matplotlib-plot
+  https://www.tensorflow.org/guide/keras/save_and_serialize
+28/09/20:
+  https://www.kaggle.com/dansbecker/running-kaggle-kernels-with-a-gpu
+  https://towardsdatascience.com/when-to-use-cpus-vs-gpus-vs-tpus-in-a-kaggle-competition-9af708a8c3eb
+  https://www.kaggle.com/docs/tpu
+  https://www.kaggle.com/mgornergoogle/five-flowers-with-keras-and-xception-on-tpu
+  https://www.tensorflow.org/api_docs/python/tf/saved_model/SaveOptions
+  https://towardsdatascience.com/machine-learning-general-process-8f1b510bd8af
+  https://home.aveek.io/blog/post/checkpointing-keras-model/
+  https://www.kaggle.com/general/88036
+  https://github.com/tensorflow/tensorflow/issues/40622#issuecomment-654488935
+29/09/20:
+  https://www.kaggle.com/dansbecker/running-kaggle-kernels-with-a-gpu
+  https://datascience.stackexchange.com/questions/13461/how-can-i-get-prediction-for-only-one-instance-in-keras
