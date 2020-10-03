@@ -18,7 +18,8 @@ import string
 import pygame
 
 # import to load the neural network that I made on Kaggle (see line 1)
-from tensorflow import keras
+# from tensorflow import keras
+import keras
 
 
 class Node:
@@ -120,7 +121,6 @@ class Digit:
         self.colour = colour
         self.surface = surface
         self.data = data
-        self.values = values
         self.mapping = mapping
         # later on, if height is None, it is assigned based on the aspect ratio and the width
         self.height = height
@@ -135,8 +135,8 @@ class Digit:
 
         plt.imshow(self.cur_digit, cmap="Greys")
         plt.axis("off")
-        plt.title(chr(self.mapping[int(self.predict())]),
-                  y=-0.15, color="green")
+        # plt.title(chr(self.mapping[int(self.predict())]),
+        #           y=-0.15, color="green") # removed the values, makes no sense to keep the green label
         plt.savefig("images/transposed_digit.png")
 
         self.cur_dig_img = pygame.image.load(
@@ -153,7 +153,7 @@ class Digit:
             (self.height-self.rect[3])/2) > self.border_width else self.rect.move(int(self.x+self.border_width), int(self.y+self.border_width))  # a = b + 2c, c = (a-b)/2
 
     def predict(self):
-        return self.values[self.index]
+        return self.data[self.index]
 
     def draw(self):
         pygame.draw.rect(self.surface, self.colour,
@@ -216,7 +216,7 @@ class PredictiveText:
     pass
 
 
-def append_letter(i, w, model, y, mapping):
+def append_letter(i, w, y, mapping):
     # w.append(l)
     #prediction = model.predict(cur_digit)
     prediction = chr(mapping[int(y[i])])
@@ -269,8 +269,8 @@ def setup(screen_size):
     #test_x, test_y = load_data("data/testShort.csv")
 
     # Loading training and testing data
-    test_x_letters, _ = load_data("data/emnist-letters_test.csv")
-    test_x_digits, _ = load_data("data/emnist-digits_test.csv")
+    test_x_letters, _ = load_data("data/emnist-letters-test.csv")
+    test_x_digits, _ = load_data("data/emnist-digits-test.csv")
 
     # Normalise Pixel Data
     # converting pixel values in range [0,1]
@@ -310,7 +310,7 @@ def setup(screen_size):
     sentence = []
 
     digit = Digit(int((screen_x-200)/2), 20, 200, (0, 0, 0),
-                  screen, test_x_digits, mapping_digits)
+                  screen, test_x_letters, mapping_letters)
 
     new_img = Button(int((screen_x-150)/2), digit.y + digit.height + 20, 150, 50, 10, (0, 139, 139),
                      "NEW IMAGE", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
@@ -353,7 +353,7 @@ def main(screen_size):
                 new_img.is_pressed(mousex, mousey, digit.gen_img)
                 # select_img.is_pressed(mousex, mousey, append_letter, letter, current_word)
                 select_img.is_pressed(mousex, mousey, append_letter, digit.index,
-                                      current_word, model_letters, test_y_letters, mapping_letters)
+                                      current_word, test_y_letters, mapping_letters)
                 # https://datascience.stackexchange.com/questions/13461/how-can-i-get-prediction-for-only-one-instance-in-keras
                 finish_word.is_pressed(
                     mousex, mousey, append_word, current_word, sentence)

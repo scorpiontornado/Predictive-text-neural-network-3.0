@@ -63,3 +63,7 @@
 29/09/20:
   https://www.kaggle.com/dansbecker/running-kaggle-kernels-with-a-gpu
   https://datascience.stackexchange.com/questions/13461/how-can-i-get-prediction-for-only-one-instance-in-keras
+01/10/20:
+  https://github.com/tensorflow/tensorboard/issues/1566
+  https://stackoverflow.com/questions/50937721/problems-getting-fastpython-protobuf-support/50950265#50950265
+  https://stackoverflow.com/questions/63308383/typeerrorkeyword-argument-not-understood-groups-in-keras-models-load-mod
