@@ -113,25 +113,37 @@ class Node:
         return sorted(output)
 
 
-class Digit:
-    def __init__(self, x, y, width, colour, surface, data, mapping, height=None, border_width=5):
+class Char:
+    def __init__(self, x, y, width, colour, surface, X_letters, X_digits, y_letters, y_digits, mapping_letters, mapping_digits, height=None, border_width=5):
         self.x = x
         self.y = y
         self.width = width
         self.colour = colour
         self.surface = surface
-        self.data = data
-        self.mapping = mapping
+        self.X_letters = X_letters
+        self.X_digits = X_digits
+        self.y_letters = y_letters
+        self.y_digits = y_digits
+        self.mapping_letters = mapping_letters
+        self.mapping_digits = mapping_digits
         # later on, if height is None, it is assigned based on the aspect ratio and the width
         self.height = height
         self.border_width = border_width
 
+        # self.state = "letters"
+        self.letters = True
+        self.uppercase = True
         self.gen_img()
 
     def gen_img(self):
-        self.index = random.choice(range(len(self.data)))
-        self.cur_digit = self.data[self.index].reshape([28, 28])
-        self.cur_digit = self.cur_digit.transpose()
+        if self.letters:
+            self.index = random.choice(range(len(self.X_letters)))
+            self.cur_digit = self.X_letters[self.index].reshape([28, 28])
+            self.cur_digit = self.cur_digit.transpose()
+        else:
+            self.index = random.choice(range(len(self.X_digits)))
+            self.cur_digit = self.X_digits[self.index].reshape([28, 28])
+            self.cur_digit = self.cur_digit.transpose()
 
         plt.imshow(self.cur_digit, cmap="Greys")
         plt.axis("off")
@@ -153,7 +165,18 @@ class Digit:
             (self.height-self.rect[3])/2) > self.border_width else self.rect.move(int(self.x+self.border_width), int(self.y+self.border_width))  # a = b + 2c, c = (a-b)/2
 
     def predict(self):
-        return self.data[self.index]
+        # return self.data[self.index]
+        self.prediction = chr(self.mapping_letters[int(self.y_letters[self.index])]) if self.letters else chr(self.mapping_digits[int(self.y_digits[self.index])])
+        #return self.prediction.upper() if self.uppercase else self.prediction.lower() # won't allow upper to be set after returning
+        self.prediction = self.prediction.upper() if self.uppercase else self.prediction.lower()
+        self.uppercase = False
+        return self.prediction
+    
+    def change_state(self):
+        self.letters = not self.letters
+
+    def change_case(self):
+        self.uppercase = not self.uppercase
 
     def draw(self):
         pygame.draw.rect(self.surface, self.colour,
@@ -216,11 +239,8 @@ class PredictiveText:
     pass
 
 
-def append_letter(i, w, y, mapping):
-    # w.append(l)
-    #prediction = model.predict(cur_digit)
-    prediction = chr(mapping[int(y[i])])
-    w.append(prediction)
+def append_letter(l, w):
+    w.append(l)
 
 
 def append_word(w, s):
@@ -309,21 +329,23 @@ def setup(screen_size):
     current_word = []
     sentence = []
 
-    digit = Digit(int((screen_x-200)/2), 20, 200, (0, 0, 0),
-                  screen, test_x_letters, mapping_letters)
+    char = Char(int((screen_x-200)/2), 20, 200, (0, 0, 0),
+                screen, test_x_letters, test_x_digits, test_y_letters, test_y_digits, mapping_letters, mapping_digits)
 
-    new_img = Button(int((screen_x-150)/2), digit.y + digit.height + 20, 150, 50, 10, (0, 139, 139),
+    new_img = Button(int((screen_x-150)/2), char.y + char.height + 20, 150, 50, 10, (0, 139, 139),
                      "NEW IMAGE", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
     select_img = Button(50, new_img.y + new_img.height + 20, 150, 50, 10, (0, 139, 139),
                         "SELECT IMAGE", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
     finish_word = Button(screen_x-150-50, new_img.y + new_img.height + 20, 150, 50, 10, (0, 139, 139),
                          "FINISH WORD", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
+    shift = Button(char.x/2-80/2, (char.y + (char.y + char.height)) - 80/2, 80, 80, 10, (89, 89, 89),
+                         "SHIFT", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
 
-    return done, screen, clock, current_word, sentence, digit, new_img, select_img, finish_word, model_letters, model_digits, test_x_letters, test_y_letters, test_x_digits, test_y_digits, mapping_letters, mapping_digits
+    return done, screen, clock, current_word, sentence, char, new_img, select_img, finish_word, shift, model_letters, model_digits, test_x_letters, test_y_letters, test_x_digits, test_y_digits, mapping_letters, mapping_digits
 
 
 def main(screen_size):
-    done, screen, clock, current_word, sentence, digit, new_img, select_img, finish_word, model_letters, model_digits, test_x_letters, test_y_letters, test_x_digits, test_y_digits, mapping_letters, mapping_digits = setup(
+    done, screen, clock, current_word, sentence, char, new_img, select_img, finish_word, shift, model_letters, model_digits, test_x_letters, test_y_letters, test_x_digits, test_y_digits, mapping_letters, mapping_digits = setup(
         screen_size)
 
     ### start main loop ###
@@ -333,10 +355,11 @@ def main(screen_size):
 
         screen.fill((255, 255, 255))
         # Blit everything to the screen
-        digit.draw()
+        char.draw()
         new_img.draw()
         select_img.draw()
         finish_word.draw()
+        shift.draw()
 
         font = pygame.font.Font('freesansbold.ttf', 16)
         text = font.render(" ".join(sentence) + " " +
@@ -350,13 +373,15 @@ def main(screen_size):
                 done = True
             elif event.type == pygame.MOUSEBUTTONUP:
                 mousex, mousey = event.pos
-                new_img.is_pressed(mousex, mousey, digit.gen_img)
+                new_img.is_pressed(mousex, mousey, char.gen_img)
                 # select_img.is_pressed(mousex, mousey, append_letter, letter, current_word)
-                select_img.is_pressed(mousex, mousey, append_letter, digit.index,
-                                      current_word, test_y_letters, mapping_letters)
+                select_img.is_pressed(mousex, mousey, append_letter, char.predict(),
+                                      current_word)
                 # https://datascience.stackexchange.com/questions/13461/how-can-i-get-prediction-for-only-one-instance-in-keras
                 finish_word.is_pressed(
                     mousex, mousey, append_word, current_word, sentence)
+                shift.is_pressed(
+                    mousex, mousey, char.change_case)
 
         pygame.display.flip()
         clock.tick(60)
