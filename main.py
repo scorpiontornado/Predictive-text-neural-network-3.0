@@ -165,18 +165,27 @@ class Char:
             (self.height-self.rect[3])/2) > self.border_width else self.rect.move(int(self.x+self.border_width), int(self.y+self.border_width))  # a = b + 2c, c = (a-b)/2
 
     def predict(self):
+        print("Predicting...")
         # return self.data[self.index]
-        self.prediction = chr(self.mapping_letters[int(self.y_letters[self.index])]) if self.letters else chr(self.mapping_digits[int(self.y_digits[self.index])])
-        #return self.prediction.upper() if self.uppercase else self.prediction.lower() # won't allow upper to be set after returning
-        self.prediction = self.prediction.upper() if self.uppercase else self.prediction.lower()
-        self.uppercase = False
+        self.prediction = chr(self.mapping_letters[int(self.y_letters[self.index])]) if self.letters else chr(
+            self.mapping_digits[int(self.y_digits[self.index])])
+        # return self.prediction.upper() if self.uppercase else self.prediction.lower() # won't allow upper to be set after returning
+        self.prediction = self.prediction.upper(
+        ) if self.uppercase else self.prediction.lower()
         return self.prediction
-    
+
     def change_state(self):
+        print(f"Before: {self.letters}")
         self.letters = not self.letters
+        print(f"After: {self.letters}")
 
     def change_case(self):
+        print(f"Before: {self.uppercase}")
         self.uppercase = not self.uppercase
+        print(f"After: {self.uppercase}")
+    
+    def set_lowercase(self):
+        self.uppercase = False
 
     def draw(self):
         pygame.draw.rect(self.surface, self.colour,
@@ -201,6 +210,7 @@ class Button:
 
     def is_pressed(self, mousex, mousey, method_to_run, *args, **kwargs):
         if self.rect.collidepoint((mousex, mousey)):
+            print(f"{self.string} was pressed!")
             method_to_run(*args, **kwargs)
 
     def draw(self):
@@ -239,9 +249,10 @@ class PredictiveText:
     pass
 
 
-def append_letter(l, w):
+def append_letter(l, w, *args, method=None, **kwargs):
     w.append(l)
-
+    if method:
+        method(*args, **kwargs)
 
 def append_word(w, s):
     if len(w) > 0:
@@ -338,8 +349,8 @@ def setup(screen_size):
                         "SELECT IMAGE", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
     finish_word = Button(screen_x-150-50, new_img.y + new_img.height + 20, 150, 50, 10, (0, 139, 139),
                          "FINISH WORD", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
-    shift = Button(char.x/2-80/2, (char.y + (char.y + char.height)) - 80/2, 80, 80, 10, (89, 89, 89),
-                         "SHIFT", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
+    shift = Button(char.x/2-60/2, (char.y + (char.y + char.height))/2 - 20/2, 60, 20, 4, (89, 89, 89),
+                   "SHIFT", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
 
     return done, screen, clock, current_word, sentence, char, new_img, select_img, finish_word, shift, model_letters, model_digits, test_x_letters, test_y_letters, test_x_digits, test_y_digits, mapping_letters, mapping_digits
 
@@ -351,6 +362,7 @@ def main(screen_size):
     ### start main loop ###
 
     while not done:
+        # print(char.uppercase)
         # letter = random.choice(string.ascii_lowercase)
 
         screen.fill((255, 255, 255))
@@ -372,11 +384,12 @@ def main(screen_size):
             if event.type == pygame.QUIT:
                 done = True
             elif event.type == pygame.MOUSEBUTTONUP:
+                print("Mouse up")
                 mousex, mousey = event.pos
                 new_img.is_pressed(mousex, mousey, char.gen_img)
                 # select_img.is_pressed(mousex, mousey, append_letter, letter, current_word)
                 select_img.is_pressed(mousex, mousey, append_letter, char.predict(),
-                                      current_word)
+                                      current_word, method=char.set_lowercase)
                 # https://datascience.stackexchange.com/questions/13461/how-can-i-get-prediction-for-only-one-instance-in-keras
                 finish_word.is_pressed(
                     mousex, mousey, append_word, current_word, sentence)
