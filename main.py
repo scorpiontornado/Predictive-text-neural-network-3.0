@@ -274,11 +274,11 @@ def predict_words(node, current_word, screen_size, y_coord, surface):
     for i in range(3):
         # TODO: make this a formula
         if i == 0:
-            x_coord = 20
+            x_coord = 15
         elif i == 1:
             x_coord = int((screen_size[0]-120)/2)
         else:
-            x_coord = screen_size[0] - 20 - 120
+            x_coord = screen_size[0] - 15 - 120
 
         try:
             p_buttons.append(Button(x_coord, y_coord, 120, 40, 10, (89, 89, 89), predictions[i], pygame.font.Font(
@@ -375,11 +375,11 @@ def setup(screen_size):
     char = Char(int((screen_x-200)/2), 20, 200, (0, 0, 0),
                 screen, test_x_letters, test_x_digits, test_y_letters, test_y_digits, mapping_letters, mapping_digits)
 
-    new_img = Button(int((screen_x-150)/2), char.y + char.height + 20, 150, 50, 10, (0, 139, 139),
+    new_img = Button(15, char.y + char.height + 20, 120, 40, 10, (0, 139, 139),
                      "NEW IMAGE", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
-    select_img = Button(50, new_img.y + new_img.height + 20, 150, 50, 10, (0, 139, 139),
+    select_img = Button(int((screen_size[0]-120)/2), char.y + char.height + 20, 120, 40, 10, (0, 139, 139),
                         "SELECT IMAGE", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
-    finish_word = Button(screen_x-150-50, new_img.y + new_img.height + 20, 150, 50, 10, (0, 139, 139),
+    finish_word = Button(screen_size[0] - 15 - 120, char.y + char.height + 20, 120, 40, 10, (0, 139, 139),
                          "FINISH WORD", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
     shift = Button(char.x/2-90/2, (char.y + (char.y + char.height))/2 - 30/2, 90, 30, 4, (89, 89, 89),
                    "SHIFT", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
@@ -401,7 +401,7 @@ def main(screen_size):
 
         if not p_buttons:
             p_buttons = predict_words(
-                root, current_word, screen_size, select_img.y + select_img.height + 10, screen)
+                root, current_word, screen_size, new_img.y + new_img.height + 40, screen)
 
         screen.fill((255, 255, 255))
         # Blit everything to the screen
@@ -412,6 +412,9 @@ def main(screen_size):
         shift.draw()
         to_num.draw()
 
+        pygame.draw.rect(screen, (192, 192, 192), (0, new_img.y +
+                                                   new_img.height + 20, screen_size[0], 40+40))
+
         for prediction in p_buttons:
             prediction.draw()
 
@@ -419,7 +422,8 @@ def main(screen_size):
         text = font.render(" ".join(sentence) + " " +
                            "".join(current_word), True, (0, 0, 0))
         text_rect = text.get_rect()
-        text_rect.center = (int(screen_size[0]/2), 400)
+        text_rect.center = (
+            int(screen_size[0]/2), new_img.y + new_img.height + 20 + 40+40+20+text_rect[3]/2)
         screen.blit(text, text_rect)
 
         for event in pygame.event.get():
@@ -446,7 +450,7 @@ def main(screen_size):
                             mousex, mousey, append_word, str(prediction), current_word, sentence)
 
                 p_buttons = predict_words(
-                    root, current_word, screen_size, select_img.y + select_img.height + 10, screen)
+                    root, current_word, screen_size, new_img.y + new_img.height + 40, screen)
         pygame.display.flip()
         clock.tick(60)
 
