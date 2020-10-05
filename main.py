@@ -88,7 +88,7 @@ class Node:
             # if the child is the word, return the child??
             try:
                 return self.children[prefix]
-            except KeyError: # if there is no prefix node
+            except KeyError:  # if there is no prefix node
                 return None
         if prefix[:pointer+1] not in self.children:
             return None  # if the child is not in the dict, return None
@@ -187,7 +187,7 @@ class Char:
         print(f"Before: {self.uppercase}")
         self.uppercase = not self.uppercase
         print(f"After: {self.uppercase}")
-    
+
     def set_lowercase(self):
         self.uppercase = False
 
@@ -232,21 +232,24 @@ class Button:
                                                        self.r, self.y+self.height-self.r), self.r)  # bottom right
         pygame.draw.circle(self.surface, self.colour, (self.x+self.r,
                                                        self.y+self.height-self.r), self.r)  # bottom left
+        if self.string:
+            self.text = self.font.render(self.string, True, self.text_colour)
 
-        self.text = self.font.render(self.string, True, self.text_colour)
+            try:
+                self.text = pygame.transform.scale(self.text, (int(
+                    self.width*0.8), int(self.height*(-1/500*self.text.get_rect()[2]+0.9))))
+            except ValueError:
+                print("ValueError: Cannot scale to negative size")
 
-        try:
-            self.text = pygame.transform.scale(self.text, (int(
-                self.width*0.8), int(self.height*(-1/500*self.text.get_rect()[2]+0.9))))
-        except ValueError:
-            print("ValueError: Cannot scale to negative size")
+            self.text_rect = self.text.get_rect()
 
-        self.text_rect = self.text.get_rect()
+            self.text_rect.center = (
+                self.x + self.x+self.width)//2, (self.y + self.y+self.height)//2
 
-        self.text_rect.center = (
-            self.x + self.x+self.width)//2, (self.y + self.y+self.height)//2
+            self.surface.blit(self.text, self.text_rect)
 
-        self.surface.blit(self.text, self.text_rect)
+    def __str__(self):
+        return self.string
 
 
 def append_letter(l, w, *args, method=None, **kwargs):
@@ -261,8 +264,31 @@ def append_word(w1, w2, s):
         w2.clear()
 
 
-def do_nothing():
-    pass
+def predict_words(node, current_word, screen_size, y_coord, surface):
+    p_buttons = []
+    try:
+        predictions = node.find("".join(current_word)).words()
+    except AttributeError:  # if no word is found
+        predictions = []
+
+    for i in range(3):
+        # TODO: make this a formula
+        if i == 0:
+            x_coord = 20
+        elif i == 1:
+            x_coord = int((screen_size[0]-120)/2)
+        else:
+            x_coord = screen_size[0] - 20 - 120
+
+        try:
+            p_buttons.append(Button(x_coord, y_coord, 120, 40, 10, (89, 89, 89), predictions[i], pygame.font.Font(
+                'freesansbold.ttf', 32), (255, 255, 255), surface))
+            print(predictions[i], p_buttons[i])
+        except:
+            p_buttons.append(Button(x_coord, y_coord, 120, 40, 10, (89, 89, 89),
+                                    "", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), surface))
+            print(p_buttons[i])
+    return p_buttons
 
 
 def load_map(map_path):
@@ -344,7 +370,7 @@ def setup(screen_size):
 
     current_word = []
     sentence = []
-    predictions = {}
+    p_buttons = []
 
     char = Char(int((screen_x-200)/2), 20, 200, (0, 0, 0),
                 screen, test_x_letters, test_x_digits, test_y_letters, test_y_digits, mapping_letters, mapping_digits)
@@ -358,13 +384,13 @@ def setup(screen_size):
     shift = Button(char.x/2-90/2, (char.y + (char.y + char.height))/2 - 30/2, 90, 30, 4, (89, 89, 89),
                    "SHIFT", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
     to_num = Button((char.x+char.width+screen_x)/2-90/2, (char.y + (char.y + char.height))/2 - 30/2, 90, 30, 4, (89, 89, 89),
-                   "123", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
+                    "123", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
 
-    return done, screen, clock, current_word, sentence, predictions, char, new_img, select_img, finish_word, shift, to_num, model_letters, model_digits, test_x_letters, test_y_letters, test_x_digits, test_y_digits, mapping_letters, mapping_digits, root
+    return done, screen, clock, current_word, sentence, p_buttons, char, new_img, select_img, finish_word, shift, to_num, model_letters, model_digits, test_x_letters, test_y_letters, test_x_digits, test_y_digits, mapping_letters, mapping_digits, root
 
 
 def main(screen_size):
-    done, screen, clock, current_word, sentence, predictions, char, new_img, select_img, finish_word, shift, to_num, model_letters, model_digits, test_x_letters, test_y_letters, test_x_digits, test_y_digits, mapping_letters, mapping_digits, root = setup(
+    done, screen, clock, current_word, sentence, p_buttons, char, new_img, select_img, finish_word, shift, to_num, model_letters, model_digits, test_x_letters, test_y_letters, test_x_digits, test_y_digits, mapping_letters, mapping_digits, root = setup(
         screen_size)
 
     ### start main loop ###
@@ -372,6 +398,10 @@ def main(screen_size):
     while not done:
         # print(char.uppercase)
         # letter = random.choice(string.ascii_lowercase)
+
+        if not p_buttons:
+            p_buttons = predict_words(
+                root, current_word, screen_size, select_img.y + select_img.height + 10, screen)
 
         screen.fill((255, 255, 255))
         # Blit everything to the screen
@@ -382,8 +412,8 @@ def main(screen_size):
         shift.draw()
         to_num.draw()
 
-        for prediction in predictions:
-            predictions[prediction].draw()
+        for prediction in p_buttons:
+            prediction.draw()
 
         font = pygame.font.Font('freesansbold.ttf', 16)
         text = font.render(" ".join(sentence) + " " +
@@ -409,23 +439,14 @@ def main(screen_size):
                     mousex, mousey, char.change_case)
                 to_num.is_pressed(
                     mousex, mousey, char.change_state)
-                
-                for prediction in predictions:
-                    predictions[prediction].is_pressed(mousex, mousey, append_word, prediction, current_word, sentence)
 
-                
-                if current_word:
-                    try:
-                        p_list = root.find("".join(current_word)).words()
-                    except AttributeError: # if no word is found
-                        p_list = []
-                    if p_list:
-                        predictions[p_list[0]] = Button(int((screen_size[0]-150)/2), select_img.y + select_img.height + 20, 150, 50, 10, (89, 89, 89), p_list[0], pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
-                    else:
-                        predictions = {}
-                else:
-                    predictions = {}
+                for prediction in p_buttons:
+                    if prediction.string:
+                        prediction.is_pressed(
+                            mousex, mousey, append_word, str(prediction), current_word, sentence)
 
+                p_buttons = predict_words(
+                    root, current_word, screen_size, select_img.y + select_img.height + 10, screen)
         pygame.display.flip()
         clock.tick(60)
 
