@@ -178,6 +178,7 @@ class Char:
         print(f"Before: {self.letters}")
         self.letters = not self.letters
         print(f"After: {self.letters}")
+        self.gen_img()
 
     def change_case(self):
         print(f"Before: {self.uppercase}")
@@ -349,14 +350,16 @@ def setup(screen_size):
                         "SELECT IMAGE", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
     finish_word = Button(screen_x-150-50, new_img.y + new_img.height + 20, 150, 50, 10, (0, 139, 139),
                          "FINISH WORD", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
-    shift = Button(char.x/2-60/2, (char.y + (char.y + char.height))/2 - 20/2, 60, 20, 4, (89, 89, 89),
+    shift = Button(char.x/2-90/2, (char.y + (char.y + char.height))/2 - 30/2, 90, 30, 4, (89, 89, 89),
                    "SHIFT", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
+    to_num = Button((char.x+char.width+screen_x)/2-90/2, (char.y + (char.y + char.height))/2 - 30/2, 90, 30, 4, (89, 89, 89),
+                   "123", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
 
-    return done, screen, clock, current_word, sentence, char, new_img, select_img, finish_word, shift, model_letters, model_digits, test_x_letters, test_y_letters, test_x_digits, test_y_digits, mapping_letters, mapping_digits
+    return done, screen, clock, current_word, sentence, char, new_img, select_img, finish_word, shift, to_num, model_letters, model_digits, test_x_letters, test_y_letters, test_x_digits, test_y_digits, mapping_letters, mapping_digits
 
 
 def main(screen_size):
-    done, screen, clock, current_word, sentence, char, new_img, select_img, finish_word, shift, model_letters, model_digits, test_x_letters, test_y_letters, test_x_digits, test_y_digits, mapping_letters, mapping_digits = setup(
+    done, screen, clock, current_word, sentence, char, new_img, select_img, finish_word, shift, to_num, model_letters, model_digits, test_x_letters, test_y_letters, test_x_digits, test_y_digits, mapping_letters, mapping_digits = setup(
         screen_size)
 
     ### start main loop ###
@@ -372,6 +375,7 @@ def main(screen_size):
         select_img.draw()
         finish_word.draw()
         shift.draw()
+        to_num.draw()
 
         font = pygame.font.Font('freesansbold.ttf', 16)
         text = font.render(" ".join(sentence) + " " +
@@ -395,6 +399,8 @@ def main(screen_size):
                     mousex, mousey, append_word, current_word, sentence)
                 shift.is_pressed(
                     mousex, mousey, char.change_case)
+                to_num.is_pressed(
+                    mousex, mousey, char.change_state)
 
         pygame.display.flip()
         clock.tick(60)
