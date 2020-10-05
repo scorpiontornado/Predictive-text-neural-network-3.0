@@ -86,7 +86,10 @@ class Node:
         pointer = len(self._prefix)
         if prefix == prefix[:pointer+1]:
             # if the child is the word, return the child??
-            return self.children[prefix]
+            try:
+                return self.children[prefix]
+            except KeyError: # if there is no prefix node
+                return None
         if prefix[:pointer+1] not in self.children:
             return None  # if the child is not in the dict, return None
         else:
@@ -246,19 +249,20 @@ class Button:
         self.surface.blit(self.text, self.text_rect)
 
 
-class PredictiveText:
-    pass
-
-
 def append_letter(l, w, *args, method=None, **kwargs):
     w.append(l)
     if method:
         method(*args, **kwargs)
 
-def append_word(w, s):
-    if len(w) > 0:
-        s.append("".join(w))
-        w.clear()
+
+def append_word(w1, w2, s):
+    if len(w1) > 0:
+        s.append("".join(w1))
+        w2.clear()
+
+
+def do_nothing():
+    pass
 
 
 def load_map(map_path):
@@ -340,6 +344,7 @@ def setup(screen_size):
 
     current_word = []
     sentence = []
+    predictions = {}
 
     char = Char(int((screen_x-200)/2), 20, 200, (0, 0, 0),
                 screen, test_x_letters, test_x_digits, test_y_letters, test_y_digits, mapping_letters, mapping_digits)
@@ -355,11 +360,11 @@ def setup(screen_size):
     to_num = Button((char.x+char.width+screen_x)/2-90/2, (char.y + (char.y + char.height))/2 - 30/2, 90, 30, 4, (89, 89, 89),
                    "123", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
 
-    return done, screen, clock, current_word, sentence, char, new_img, select_img, finish_word, shift, to_num, model_letters, model_digits, test_x_letters, test_y_letters, test_x_digits, test_y_digits, mapping_letters, mapping_digits
+    return done, screen, clock, current_word, sentence, predictions, char, new_img, select_img, finish_word, shift, to_num, model_letters, model_digits, test_x_letters, test_y_letters, test_x_digits, test_y_digits, mapping_letters, mapping_digits, root
 
 
 def main(screen_size):
-    done, screen, clock, current_word, sentence, char, new_img, select_img, finish_word, shift, to_num, model_letters, model_digits, test_x_letters, test_y_letters, test_x_digits, test_y_digits, mapping_letters, mapping_digits = setup(
+    done, screen, clock, current_word, sentence, predictions, char, new_img, select_img, finish_word, shift, to_num, model_letters, model_digits, test_x_letters, test_y_letters, test_x_digits, test_y_digits, mapping_letters, mapping_digits, root = setup(
         screen_size)
 
     ### start main loop ###
@@ -376,6 +381,9 @@ def main(screen_size):
         finish_word.draw()
         shift.draw()
         to_num.draw()
+
+        for prediction in predictions:
+            predictions[prediction].draw()
 
         font = pygame.font.Font('freesansbold.ttf', 16)
         text = font.render(" ".join(sentence) + " " +
@@ -396,11 +404,27 @@ def main(screen_size):
                                       current_word, method=char.set_lowercase)
                 # https://datascience.stackexchange.com/questions/13461/how-can-i-get-prediction-for-only-one-instance-in-keras
                 finish_word.is_pressed(
-                    mousex, mousey, append_word, current_word, sentence)
+                    mousex, mousey, append_word, current_word, current_word, sentence)
                 shift.is_pressed(
                     mousex, mousey, char.change_case)
                 to_num.is_pressed(
                     mousex, mousey, char.change_state)
+                
+                for prediction in predictions:
+                    predictions[prediction].is_pressed(mousex, mousey, append_word, prediction, current_word, sentence)
+
+                
+                if current_word:
+                    try:
+                        p_list = root.find("".join(current_word)).words()
+                    except AttributeError: # if no word is found
+                        p_list = []
+                    if p_list:
+                        predictions[p_list[0]] = Button(int((screen_size[0]-150)/2), select_img.y + select_img.height + 20, 150, 50, 10, (89, 89, 89), p_list[0], pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
+                    else:
+                        predictions = {}
+                else:
+                    predictions = {}
 
         pygame.display.flip()
         clock.tick(60)
