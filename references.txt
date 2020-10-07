@@ -67,3 +67,5 @@
   https://github.com/tensorflow/tensorboard/issues/1566
   https://stackoverflow.com/questions/50937721/problems-getting-fastpython-protobuf-support/50950265#50950265
   https://stackoverflow.com/questions/63308383/typeerrorkeyword-argument-not-understood-groups-in-keras-models-load-mod
+07/10/20:
+  https://medium.com/@maxknivets/pygame-tutorial-2-1-precise-text-wrapping-method-68576b43ec92
