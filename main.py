@@ -274,18 +274,18 @@ def predict_words(node, current_word, screen_size, y_coord, surface):
     for i in range(3):
         # TODO: make this a formula
         if i == 0:
-            x_coord = 15
+            x_coord = 20
         elif i == 1:
             x_coord = int((screen_size[0]-120)/2)
         else:
-            x_coord = screen_size[0] - 15 - 120
+            x_coord = screen_size[0] - 20 - 120
 
         try:
-            p_buttons.append(Button(x_coord, y_coord, 120, 40, 10, (89, 89, 89), predictions[i], pygame.font.Font(
+            p_buttons.append(Button(x_coord, y_coord, (screen_size[0]-(20*4))/3, ((screen_size[0]-(20*4))/3)/3, 10, (89, 89, 89), predictions[i], pygame.font.Font(
                 'freesansbold.ttf', 32), (255, 255, 255), surface))
             print(predictions[i], p_buttons[i])
         except:
-            p_buttons.append(Button(x_coord, y_coord, 120, 40, 10, (89, 89, 89),
+            p_buttons.append(Button(x_coord, y_coord, (screen_size[0]-(20*4))/3, ((screen_size[0]-(20*4))/3)/3, 10, (89, 89, 89),
                                     "", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), surface))
             print(p_buttons[i])
     return p_buttons
@@ -317,6 +317,49 @@ def load_data(data_path):
     y = np.asarray(df.iloc[:, 0]).reshape([-1, 1])
 
     return X, y
+
+
+# https://www.pygame.org/wiki/TextWrap
+# draw some text into an area of a surface
+# automatically wraps words
+# returns any text that didn't get blitted
+def drawText(surface, text, color, rect, font, aa=False, bkg=None):
+    rect = pygame.Rect(rect)
+    y = rect.top
+    lineSpacing = -2
+
+    # get the height of the font
+    fontHeight = font.size("Tg")[1]
+
+    while text:
+        i = 1
+
+        # determine if the row of text will be outside our area
+        if y + fontHeight > rect.bottom:
+            break
+
+        # determine maximum width of line
+        while font.size(text[:i])[0] < rect.width and i < len(text):
+            i += 1
+
+        # if we've wrapped the text, then adjust the wrap to the last word
+        if i < len(text):
+            i = text.rfind(" ", 0, i) + 1
+
+        # render the line and blit it to the surface
+        if bkg:
+            image = font.render(text[:i], 1, color, bkg)
+            image.set_colorkey(bkg)
+        else:
+            image = font.render(text[:i], aa, color)
+
+        surface.blit(image, (rect.left, y))
+        y += fontHeight + lineSpacing
+
+        # remove the text we just blitted
+        text = text[i:]
+
+    return text
 
 
 def setup(screen_size):
@@ -375,12 +418,15 @@ def setup(screen_size):
     char = Char(int((screen_x-200)/2), 20, 200, (0, 0, 0),
                 screen, test_x_letters, test_x_digits, test_y_letters, test_y_digits, mapping_letters, mapping_digits)
 
-    new_img = Button(15, char.y + char.height + 20, 120, 40, 10, (0, 139, 139),
+    # new_img = Button(20, char.y + char.height + 20, 120, 40, 10, (0, 139, 139),
+    #                  "NEW IMAGE", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
+    new_img = Button(20, char.y + char.height + 20, (screen_size[0]-(20*4))/3, ((screen_size[0]-(20*4))/3)/3, 10, (0, 139, 139),
                      "NEW IMAGE", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
-    select_img = Button(int((screen_size[0]-120)/2), char.y + char.height + 20, 120, 40, 10, (0, 139, 139),
+    select_img = Button(int((screen_size[0]-120)/2), char.y + char.height + 20, (screen_size[0]-(20*4))/3, ((screen_size[0]-(20*4))/3)/3, 10, (0, 139, 139),
                         "SELECT IMAGE", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
-    finish_word = Button(screen_size[0] - 15 - 120, char.y + char.height + 20, 120, 40, 10, (0, 139, 139),
+    finish_word = Button(screen_size[0] - 20 - 120, char.y + char.height + 20, (screen_size[0]-(20*4))/3, ((screen_size[0]-(20*4))/3)/3, 10, (0, 139, 139),
                          "FINISH WORD", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
+
     shift = Button(char.x/2-90/2, (char.y + (char.y + char.height))/2 - 30/2, 90, 30, 4, (89, 89, 89),
                    "SHIFT", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
     to_num = Button((char.x+char.width+screen_x)/2-90/2, (char.y + (char.y + char.height))/2 - 30/2, 90, 30, 4, (89, 89, 89),
@@ -419,12 +465,14 @@ def main(screen_size):
             prediction.draw()
 
         font = pygame.font.Font('freesansbold.ttf', 16)
-        text = font.render(" ".join(sentence) + " " +
-                           "".join(current_word), True, (0, 0, 0))
-        text_rect = text.get_rect()
-        text_rect.center = (
-            int(screen_size[0]/2), new_img.y + new_img.height + 20 + 40+40+20+text_rect[3]/2)
-        screen.blit(text, text_rect)
+        # text = font.render(" ".join(sentence) + " " +
+        #                    "".join(current_word), True, (0, 0, 0))
+        # text_rect = text.get_rect()
+        # text_rect.center = (
+        #     int(screen_size[0]/2), new_img.y + new_img.height + 20 + 40+40+20+text_rect[3]/2)
+        # screen.blit(text, text_rect)
+        drawText(screen, " ".join(sentence) + " " + "".join(current_word), (0, 0, 0), (20, new_img.y + new_img.height +
+                                                                                       20 + 40+40+20, screen_size[0]-20-20, screen_size[1]-new_img.y + new_img.height + 20 + 40+40+20-20), font)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
