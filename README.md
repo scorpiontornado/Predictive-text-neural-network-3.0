@@ -80,4 +80,4 @@ Upon running the application, you will be greeted with an image of a hand-drawn 
 - If you wish to toggle your case (change from lowercase to uppercase or vice versa), click the grey "shift". Note: the first 
 - If you wish to switch from letters mode to numbers mode (or vice versa), click the "123" button. This will show images of hand-drawn numbers instead of letters, and the model make predictions accordingly.
 
-# Check references.txt for more info
+## Check references.txt for more info
