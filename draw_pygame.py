@@ -58,6 +58,7 @@ class Node:
         # pass
         return self._is_word
 
+    # w stands for wallaby
     def add_word(self, word):
         """
         Adds the complete word into the trie, causing child nodes to be created as needed.
@@ -172,7 +173,7 @@ class Char:
             if index_y + 1 < self.rows and self.grid[index_y + 1][index_x] == 0:
                 self.grid[index_y + 1][index_x] = 0.5
 
-            print(f"Set ({index_x}, {index_y}) to 1")
+            # print(f"Set ({index_x}, {index_y}) to 1")
 
     def predict(self):
         print("Predicting...")
@@ -189,6 +190,7 @@ class Char:
         prediction = prediction.upper() if self.uppercase else prediction.lower()
 
         print(f"prediction: {prediction}")
+        self.clear()
         return prediction
 
     def clear(self):
@@ -199,7 +201,7 @@ class Char:
         #         print(f"After: {cell}")
 
         self.grid = [[0 for i in range(self.cols)] for i in range(self.rows)]
-        print("Grid cleared")
+        # print("Grid cleared")
 
         # print the grid # debugging
         # print("[")
@@ -307,16 +309,28 @@ class Button:
         return self.string
 
 
-def append_letter(l, w, *args, method=None, **kwargs):
+# def append_letter(l, w, *args, method=None, **kwargs):
+#     w.append(l)
+#     if method:
+#         method(*args, **kwargs)
+
+def append_letter(l, w, method_before=None, method_after=None):
+    if method_before:
+        l = method_before()
     w.append(l)
-    if method:
-        method(*args, **kwargs)
+    if method_after:
+        method_after()
 
 
 def append_word(w1, w2, s):
     if len(w1) > 0:
         s.append("".join(w1))
         w2.clear()
+
+
+def backspace_word(w, s):
+    if w != []:
+        w.pop()
 
 
 def predict_words(node, current_word, screen_size, y_coord, surface):
@@ -501,17 +515,19 @@ def setup(screen_size):
 
     shift = Button(110/2-90/2, (20 + (20 + 200))/2 - 30/2, 90, 30, 4, (89, 89, 89),
                    "SHIFT", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
+    backspace = Button(110/2-90/2, (20 + (20 + 200))/2 - 30/2 + 30 + 15, 90, 30, 4, (89, 89, 89),
+                       "BACKSPACE", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
     to_num = Button((110+200+screen_x)/2-90/2, (20 + (20 + 200))/2 - 30/2, 90, 30, 4, (89, 89, 89),
                     "123", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
 
     # test = Button(200, 350, 90, 30, 4, (89, 89, 89),
     #              "TEST", pygame.font.Font('freesansbold.ttf', 32), (255, 255, 255), screen)
 
-    return done, mouse_down, screen, clock, current_word, sentence, p_buttons, char, clear, select_img, finish_word, shift, to_num, model_letters, model_digits, test_x_letters, test_y_letters, test_x_digits, test_y_digits, mapping_letters, mapping_digits, root
+    return done, mouse_down, screen, clock, current_word, sentence, p_buttons, char, clear, select_img, finish_word, shift, backspace, to_num, model_letters, model_digits, test_x_letters, test_y_letters, test_x_digits, test_y_digits, mapping_letters, mapping_digits, root
 
 
 def main(screen_size):
-    done, mouse_down, screen, clock, current_word, sentence, p_buttons, char, clear, select_img, finish_word, shift, to_num, model_letters, model_digits, test_x_letters, test_y_letters, test_x_digits, test_y_digits, mapping_letters, mapping_digits, root = setup(
+    done, mouse_down, screen, clock, current_word, sentence, p_buttons, char, clear, select_img, finish_word, shift, backspace, to_num, model_letters, model_digits, test_x_letters, test_y_letters, test_x_digits, test_y_digits, mapping_letters, mapping_digits, root = setup(
         screen_size)
 
     ### start main loop ###
@@ -532,6 +548,7 @@ def main(screen_size):
         select_img.draw()
         finish_word.draw()
         shift.draw()
+        backspace.draw()
         to_num.draw()
         # test.draw()
 
@@ -564,13 +581,15 @@ def main(screen_size):
                 print("Mouse up")
                 clear.is_pressed(mousex, mousey, char.clear)
                 # select_img.is_pressed(mousex, mousey, append_letter, letter, current_word)
-                select_img.is_pressed(mousex, mousey, append_letter, char.predict(),
-                                      current_word, method=char.set_lowercase)
+                select_img.is_pressed(mousex, mousey, append_letter, "",
+                                      current_word, method_before=char.predict, method_after=char.set_lowercase)
                 # https://datascience.stackexchange.com/questions/13461/how-can-i-get-prediction-for-only-one-instance-in-keras
                 finish_word.is_pressed(
                     mousex, mousey, append_word, current_word, current_word, sentence)
                 shift.is_pressed(
                     mousex, mousey, char.change_case)
+                backspace.is_pressed(
+                    mousex, mousey, backspace_word, current_word, sentence)
                 to_num.is_pressed(
                     mousex, mousey, char.change_state)
 
