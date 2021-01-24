@@ -1,5 +1,6 @@
 # venv
 venv/
+venv\ backup/
 
 # vscode files
 .vscode/
