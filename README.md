@@ -61,9 +61,21 @@ After the first time - run the following to activate the virtual environment:
 . venv/bin/activate
 ```
 
-### Running main.py:
+### Running the project:
+Note: main.py is currently outdated. Use draw_pygame.py for the ability to hand-write characters instead of searching for the right image of the character you want.
 
-Run main.py:
+#### Running draw_pygame.py:
+If you want to view the improved version of the project, run draw_pygame.py:
+
+```
+python3 draw_pygame.py
+```
+
+Depending on your computer's specifications, this code could take more than a minute and a half to run. After this time, it will launch a pygame window.
+Press and hold the mouse, and move the cursor over the grid to draw the desired character. Due to limitations with pygame, you may need to move the cursor slower than expected in order to avoid gaps in the drawing.
+
+#### Running main.py:
+If you want to view the legacy version of the project, run main.py:
 
 ```
 python3 main.py
