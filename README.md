@@ -72,7 +72,7 @@ python3 draw_pygame.py
 ```
 
 Depending on your computer's specifications, this code could take more than a minute and a half to run. After this time, it will launch a pygame window.
-Press and hold the mouse, and move the cursor over the grid to draw the desired character. Due to limitations with pygame, you may need to move the cursor slower than expected in order to avoid gaps in the drawing.
+Press and hold the mouse and move the cursor over the grid to draw the desired character. Due to limitations with pygame, you may need to move the cursor slower than expected in order to avoid gaps in the drawing.
 
 #### Running main.py:
 If you want to view the legacy version of the project, run main.py:
@@ -84,12 +84,23 @@ python3 main.py
 Depending on your computer's specifications, this code could take more than a minute and a half to run. After this time, it will launch a pygame window.
 
 ### Using the product
+#### draw_pygame.py (improved)
+Upon running the application, you will be greeted with an empty grid, as well as a collection of buttons. From here, you have a few choices:
+- To draw a character, press and hold the mouse and move the cursor over the grid.
+- When you are finished drawing the character, click the cyan "select image" button to append the letter onto your current word.
+- To clear the grid, allowing you to draw a new character, click the cyan "clear" button.
+- If you wish to finish the word as it currently is and start a new word, click the cyan "finish word" button.
+- If your desired word is in one of the three grey buttons in the middle of the screen, click that button to automatically complete your word to the prediction.
+- If you wish to toggle your case (change from lowercase to uppercase or vice versa), click the grey "shift". Note: the first letter will be in uppercase by default, then it will automatically toggle to lowercase.
+- If you wish to switch from letters mode to numbers mode (or vice versa), click the "123" button. This will make the model predict numbers rather than letters when you press the cyan "select image" button. Note: by default, the application will be set to letters mode.
+
+#### main.py (legacy)
 Upon running the application, you will be greeted with an image of a hand-drawn letter (by default, the application will be set to letters mode), as well as a collection of buttons. From here, you have a few choices:
 - If the letter is not the one you desire, click cyan "new image" button.
 - If you wish to select the image, adding the letter onto your current word, click the cyan "select image" button.
 - If you wish to finish the word as it currently is and start a new word, click the cyan "finish word" button.
 - If your desired word is in one of the three grey buttons in the middle of the screen, click that button to automatically complete your word to the prediction.
-- If you wish to toggle your case (change from lowercase to uppercase or vice versa), click the grey "shift". Note: the first 
+- If you wish to toggle your case (change from lowercase to uppercase or vice versa), click the grey "shift". Note: the first letter will be in uppercase by default, then it will automatically toggle to lowercase.
 - If you wish to switch from letters mode to numbers mode (or vice versa), click the "123" button. This will show images of hand-drawn numbers instead of letters, and the model make predictions accordingly.
 
 ## Check references.txt for more info
