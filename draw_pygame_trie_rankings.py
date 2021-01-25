@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 
 import matplotlib.pyplot as plt
-#import cv2 as cv
+# import cv2 as cv
 
 import pickle
 
@@ -20,6 +20,10 @@ import pygame
 # import to load the neural network that I made on Kaggle (see line 1)
 # from tensorflow import keras
 import keras
+
+# trie ranking imports
+import json
+import re
 
 
 class Node:
@@ -236,7 +240,7 @@ class Char:
         # pygame.draw.rect(self.surface, self.colour,
         #                 (self.x, self.y, self.width, self.height))
 
-        #self.surface.blit(self.cur_dig_img, self.rect)
+        # self.surface.blit(self.cur_dig_img, self.rect)
 
         for i, row in enumerate(self.grid):
             for j, cell in enumerate(row):
@@ -311,7 +315,7 @@ class Button:
 
             self.surface.blit(self.text, self.text_rect)
 
-        #print("Drew button")
+        # print("Drew button")
         # pygame.draw.rect(self.surface, (0, 0, 0), (0, 0, 100, 100))  # testing
 
     def __str__(self):
@@ -459,7 +463,7 @@ def setup(screen_size):
     mapping_digits = load_map("data/emnist-digits-mapping.txt")
 
     # Loading testShort.csv
-    #test_x, test_y = load_data("data/testShort.csv")
+    # test_x, test_y = load_data("data/testShort.csv")
 
     # Loading training and testing data
     test_x_letters, _ = load_data("data/emnist-letters-test.csv")
@@ -479,15 +483,33 @@ def setup(screen_size):
     test_y_digits = np.argmax(model_digits.predict(test_x_digits), axis=1)
 
     ### start predictive text code ###
-    with open("data/words_test.txt") as f:
-        words = f.read().split()
-        words = [word.lower() for word in words]
-        print(words)
+    words = []
+
+    try:
+        # instragram message data (not uploaded to github)
+        with open("data/spicy_skittles_message_1.json") as f:
+            messages_json = json.loads(f.read())
+            messages = messages_json["messages"]
+
+            for message in messages:
+                if "content" in message:
+                    for word in message["content"].split():
+                        if len(word) <= 24:  # Longest length in web2.txt: 24
+                            # UTF-8 character for ' randomly appearing in my terminal output
+                            word = re.sub(r"(â\x80\x99)", "'", word)
+                            words.append(word.lower())
+    except FileNotFoundError:
+        # basic file with a small number of words (for people from github)
+        with open("data/words_test.txt") as f:
+            words = f.read().split()
+            words = [word.lower() for word in words]
+
     root = Node('')
     for word in words:
         root.add_word(word)
     # print(root.find('friend').words())
-    print(root.find('t').words())
+    print(root.find('friend').words()[:3])
+    # print(root.find('t').words())
 
     ### start pygame code ###
 
@@ -626,7 +648,7 @@ def main(screen_size):
         if mouse_down:
             char.fill(mousex, mousey)
 
-        #pygame.draw.rect(screen, (0, 0, 0), (0, 200, 100, 100))
+        # pygame.draw.rect(screen, (0, 0, 0), (0, 200, 100, 100))
         pygame.display.flip()
         clock.tick(60)
 

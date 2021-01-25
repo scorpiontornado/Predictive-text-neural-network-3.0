@@ -100,6 +100,9 @@ with open("data/web2.txt") as f:
     print(root.find('friend').words())
 '''
 
+import json
+import re
+
 
 class Node:
     def __init__(self, prefix):
@@ -205,16 +208,51 @@ class Node:
         # return sorted(output)
 
 
-with open("data/words_test.txt") as f:
-    words = f.read().split()
-    root = Node('')
-    for word in words:
-        root.add_word(word)
-        words = [word.lower() for word in words]
-    # print(root.find('t').words())
-    print(root.words())
-    print(root.words()[0][1])
+words = []
 
-    predictions = root.find("t").words()
-    predictions = [x[0] for x in predictions]
-    print(predictions)
+try:
+    with open("data/spicy_skittles_message_1.json") as f:
+        # with open("filenotfound") as f:
+        messages_json = json.loads(f.read())
+        # words = words.split()
+        # print(messages)
+        messages = messages_json["messages"]
+
+        for message in messages:
+            if "content" in message:
+                for word in message["content"].split():
+                    if len(word) <= 24:
+                        # print(word)
+                        # word = word.replace(r"â\x80\x99", r"'") # doesn't work
+
+                        # UTF-8 character for ' randomly appearing in my terminal output
+                        word = re.sub(r"(â\x80\x99)", "'", word)
+                        words.append(word.lower())
+except FileNotFoundError:
+    # basic file with a small number of words
+    with open("data/words_test.txt") as f:
+        # with open("data/web2.txt") as f:
+        words = f.read().split()
+        words = [word.lower() for word in words]
+
+        # Find length of longest word # Longest length: 24
+        # longest_length = 0
+        # for word in words:
+        #     if len(word) > longest_length:
+        #         longest_length = len(word)
+        # print(f"Longest length: {longest_length}")
+        ###
+
+root = Node('')
+for word in words:
+    root.add_word(word)
+# print(root.find('t').words())
+
+predictions = root.words()
+# print(predictions)
+print(predictions[:3])
+# print(predictions[0][1])
+
+# predictions = root.find("t").words()
+# predictions = [x[0] for x in predictions]
+# print(predictions)
