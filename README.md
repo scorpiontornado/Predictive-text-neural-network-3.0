@@ -1,5 +1,8 @@
 # Predictive-text-neural-network-3.0
-Year 10 IST capstone project, combining a neural network to recognise handwritten digits with a markov chain model to predict the current and next words. Originally intended to help individuals that struggle with using a keyboard, but are familiar with handwriting.
+My year 10 IST capstone project - a Pygame app combining a neural network to recognise handwritten digits with a markov chain model to predict the current and next words. Originally intended to help individuals that struggle with using a keyboard, but are familiar with handwriting. Handwriting digits is a slow process, so I took inspiration from smartphone text prediction to remedy this.
+
+The neural network was created in my Kaggle notebook here:
+https://www.kaggle.com/code/scorpiontornado/predictive-text-neural-network/
 
 FOR BEST PERFORMANCE - replace words_test.txt with a data file of your own, with each word on a separate line. More occurences means the model is more likely to predict that word.
 I downloaded my messages from instagram and wrote a simple script to create the required data file, but you could use your own wordlist if wanted. For privacy reasons, I haven't included my instagram messages data file.
