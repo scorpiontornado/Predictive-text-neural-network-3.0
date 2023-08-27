@@ -1,5 +1,8 @@
 # Predictive-text-neural-network-3.0
-Awww yeahhh
+Year 10 IST capstone project, combining a neural network to recognise handwritten digits with a markov chain model to predict the current and next words. Originally intended to help individuals that struggle with using a keyboard, but are familiar with handwriting.
+
+FOR BEST PERFORMANCE - replace words_test.txt with a data file of your own, with each word on a separate line. More occurences means the model is more likely to predict that word.
+I downloaded my messages from instagram and wrote a simple script to create the required data file, but you could use your own wordlist if wanted. For privacy reasons, I haven't included my instagram messages data file.
 
 ## Prerequisites:
 
@@ -93,6 +96,9 @@ Upon running the application, you will be greeted with an empty grid, as well as
 - If your desired word is in one of the three grey buttons in the middle of the screen, click that button to automatically complete your word to the prediction.
 - If you wish to toggle your case (change from lowercase to uppercase or vice versa), click the grey "shift". Note: the first letter will be in uppercase by default, then it will automatically toggle to lowercase.
 - If you wish to switch from letters mode to numbers mode (or vice versa), click the "123" button. This will make the model predict numbers rather than letters when you press the cyan "select image" button. Note: by default, the application will be set to letters mode.
+
+#### FOR BEST PERFORMANCE - replace words_test.txt with a data file of your own, with each word on a separate line. More occurences means the model is more likely to predict that word.
+I downloaded my messages from instagram and wrote a simple script to create the required data file, but you could use your own wordlist if wanted. For privacy reasons, I haven't included my instagram messages data file.
 
 #### main.py (legacy)
 Upon running the application, you will be greeted with an image of a hand-drawn letter (by default, the application will be set to letters mode), as well as a collection of buttons. From here, you have a few choices:
